@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package benchmark;
+
+option go_package = "bench/echo";
+
+message PingRequest {
+  bytes payload = 1;
+}
+
+message PingResponse {
+  bytes payload = 1;
+}
+
+service Echo {
+  rpc Ping (PingRequest) returns (PingResponse);
+}
