@@ -1,10 +1,10 @@
 import cv2
 import numpy as np
 
-X_MIN = 700
-X_MAX = 3700
+X_MIN = 1200
+X_MAX = 3400
 Y_MIN = 300
-Y_MAX = 2300
+Y_MAX = 2100
 
 def mask_lego_pixels(bgr):
     hsv = cv2.cvtColor(bgr, cv2.COLOR_BGR2HSV)
