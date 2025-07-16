@@ -33,7 +33,7 @@ def process_image(image, scale=0.5):
     crop_id = 0
     for _, cnt in enumerate(contours):
         x, y, w, h = cv2.boundingRect(cnt)
-        if X_MIN * scale <= x <= X_MAX * scale and Y_MIN * scale <= y <= Y_MAX * scale:
+        if x >= X_MIN * scale and x + w <= X_MAX * scale and y >= Y_MIN * scale and y+h <= Y_MAX * scale:
             crop = image[y:y + h, x:x + w]
             crops[crop_id] = crop
             #We scaled the image down by a certain amount, so to record the true coordinates we divide by the scale

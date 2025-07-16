@@ -26,7 +26,7 @@ def main():
             continue
 
         color = color.lower()
-
+        print("Color of brick:", color)
         bin_position = bins.get(color.lower(), default_bin)
         message = construct_serial_message(center_x, center_y, bin_position)
         send_and_wait(ser, message)
