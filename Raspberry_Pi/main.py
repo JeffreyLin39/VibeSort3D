@@ -8,7 +8,7 @@ import cv2
 bins = {
     "red" : 15.24,
     "blue": 25.4,
-    "yellow": 35.2,
+    "yellow": 34.5,
 }
 
 default_bin = 0
