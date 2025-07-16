@@ -30,4 +30,4 @@ def upload_image(image_path, server_address="localhost:50051"):
 
 # Example usage
 if __name__ == "__main__":
-    upload_image("crops/lego_4.jpg")
+    upload_image("lego_4.jpg")
