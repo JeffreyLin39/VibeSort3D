@@ -20,7 +20,7 @@ def main():
 
     for i, center_x, center_y in detections:
         crop = crops[i]
-        image_id = i
+        image_id = str(i)
         res = classify_crop(image_id,crop)
         print(res)
     # while True():
