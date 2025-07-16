@@ -18,7 +18,7 @@ def main():
     image = capture_image()
     detections, crops = process_image(image)
 
-    for i, (center_x, center_y) in detections:
+    for i, center_x, center_y in detections:
         crop = crops[i]
         image_id = i
         res = classify_crop(image_id,crop)
