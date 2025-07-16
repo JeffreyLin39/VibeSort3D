@@ -8,7 +8,7 @@ import cv2
 bins = {
     "red" : 15.24,
     "blue": 25.4,
-    "yellow": 35.56,
+    "yellow": 35.2,
 }
 
 default_bin = 0
@@ -38,17 +38,17 @@ def main():
     #     #wait for response
     #     #response recieved, move arm accordingly
 
-def test_send_and_receive():
-    ser = open_serial()  # or your correct port
+# def test_send_and_receive():
+#     ser = open_serial()  # or your correct port
 
-    try:
-        msg = construct_serial_message(1000.0, 600.0, 15.24)
-        send_and_wait(ser, msg, expected_response="DONE")
-        print("✅ Test passed: received DONE from Arduino")
-    except Exception as e:
-        print("❌ Test failed:", e)
-    finally:
-        ser.close()
-        print("🔌 Serial connection closed")   
+#     try:
+#         msg = construct_serial_message(1000.0, 600.0, 15.24)
+#         send_and_wait(ser, msg, expected_response="DONE")
+#         print("✅ Test passed: received DONE from Arduino")
+#     except Exception as e:
+#         print("❌ Test failed:", e)
+#     finally:
+#         ser.close()
+#         print("🔌 Serial connection closed")   
 if __name__ == "__main__":
-    test_send_and_receive()
+    main()

@@ -5,7 +5,7 @@ X_MIN = 1200
 X_MAX = 3400
 Y_MIN = 300
 Y_MAX = 1900
-
+Y_OFFSET = 2100
 def mask_lego_pixels(bgr):
     hsv = cv2.cvtColor(bgr, cv2.COLOR_BGR2HSV)
 
@@ -19,7 +19,7 @@ def mask_lego_pixels(bgr):
 
     return lego_mask
 
-def find_lego_contours(mask, min_area=2500):
+def find_lego_contours(mask, min_area=2000):
     contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     return [cnt for cnt in contours if cv2.contourArea(cnt) > min_area]
 
@@ -39,7 +39,7 @@ def process_image(image, scale=0.5):
             #We scaled the image down by a certain amount, so to record the true coordinates we divide by the scale
             center_x = int((x + w // 2) / scale)
             center_y = int((y + h // 2) / scale)
-            detections.append((crop_id, center_x, center_y))
+            detections.append((crop_id, center_x-X_MIN, Y_OFFSET-center_y))
             crop_id+=1
 
     return detections, crops
