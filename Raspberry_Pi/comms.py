@@ -3,6 +3,7 @@ import bin_controller_pb2 as pb
 import bin_controller_pb2_grpc as pb_grpc
 import os
 
+#server address hardcoded as Kevn's laptop ip currently
 def upload_image(image_path, server_address="10.31.28.195:50051"):
     # Read the image file
     with open(image_path, "rb") as f:
