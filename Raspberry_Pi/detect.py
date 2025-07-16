@@ -4,7 +4,7 @@ import numpy as np
 X_MIN = 1200
 X_MAX = 3400
 Y_MIN = 300
-Y_MAX = 2100
+Y_MAX = 1900
 
 def mask_lego_pixels(bgr):
     hsv = cv2.cvtColor(bgr, cv2.COLOR_BGR2HSV)
@@ -36,6 +36,9 @@ def process_image(image, scale=0.5):
         if X_MIN * scale <= x <= X_MAX * scale and Y_MIN * scale <= y <= Y_MAX * scale:
             crop = image[y:y + h, x:x + w]
             crops[i] = crop
-            detections.append((i, x + w // 2, y + h // 2))
+            #We scaled the image down by a certain amount, so to record the true coordinates we divide by the scale
+            center_x = int((x + w // 2) / scale)
+            center_y = int((y + h // 2) / scale)
+            detections.append((i, center_x, center_y))
 
     return detections, crops

@@ -2,6 +2,15 @@ from camera import capture_image
 from detect import process_image
 import os
 import cv2
+#hardcoding the bins for now
+bins = {
+    "red" : (0,0),
+    "blue": (0,0),
+    "yellow": (0,0),
+}
+
+default_bin_pos = (0,0)
+
 def main():
     #Just for testing purposes
 
