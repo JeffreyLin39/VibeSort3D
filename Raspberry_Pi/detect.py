@@ -30,15 +30,16 @@ def process_image(image, scale=0.5):
 
     crops = {}
     detections = []
-
-    for i, cnt in enumerate(contours):
+    crop_id = 0
+    for _, cnt in enumerate(contours):
         x, y, w, h = cv2.boundingRect(cnt)
         if X_MIN * scale <= x <= X_MAX * scale and Y_MIN * scale <= y <= Y_MAX * scale:
             crop = image[y:y + h, x:x + w]
-            crops[i] = crop
+            crops[crop_id] = crop
             #We scaled the image down by a certain amount, so to record the true coordinates we divide by the scale
             center_x = int((x + w // 2) / scale)
             center_y = int((y + h // 2) / scale)
-            detections.append((i, center_x, center_y))
+            detections.append((crop_id, center_x, center_y))
+            crop_id+=1
 
     return detections, crops
