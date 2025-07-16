@@ -1,5 +1,7 @@
 import serial
+import serial.tools.list_ports
 import time
+
 def find_arduino_port():
     ports = serial.tools.list_ports.comports()
     for port in ports:
