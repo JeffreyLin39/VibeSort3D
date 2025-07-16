@@ -3,7 +3,7 @@ import bin_controller_pb2 as pb
 import bin_controller_pb2_grpc as pb_grpc
 import os
 
-def upload_image(image_path, server_address="localhost:50051"):
+def upload_image(image_path, server_address="10.31.28:50051"):
     # Read the image file
     with open(image_path, "rb") as f:
         image_data = f.read()
