@@ -16,4 +16,4 @@ def classify_crop(image_id, crop):
 
     request = pb.UploadImageRequest(image_id=image_id, image_data=image_bytes)
     response = stub.UploadImage(request)
-    return response.result
+    return response
