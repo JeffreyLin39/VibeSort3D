@@ -5,7 +5,8 @@ X_MIN = 1200
 X_MAX = 3400
 Y_MIN = 300
 Y_MAX = 1900
-Y_OFFSET = 2000
+Y_OFFSET = 2250
+X_OFFSET = 3500
 def mask_lego_pixels(bgr):
     hsv = cv2.cvtColor(bgr, cv2.COLOR_BGR2HSV)
 
@@ -39,7 +40,7 @@ def process_image(image, scale=0.5):
             #We scaled the image down by a certain amount, so to record the true coordinates we divide by the scale
             center_x = int((x + w // 2) / scale)
             center_y = int((y + h // 2) / scale)
-            detections.append((crop_id, X_MAX-center_x, Y_OFFSET-center_y))
+            detections.append((crop_id, X_OFFSET-center_x, Y_OFFSET-center_y))
             crop_id+=1
 
     return detections, crops
