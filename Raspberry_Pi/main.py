@@ -6,9 +6,9 @@ import os
 import cv2
 #hardcoding the bins for now
 bins = {
-    "red" : 15.24,
-    "blue": 25.4,
-    "yellow": 35.2,
+    "red" : 10,
+    "blue": 20,
+    "yellow": 29,
 }
 
 default_bin = 0
