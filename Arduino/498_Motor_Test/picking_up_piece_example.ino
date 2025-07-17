@@ -14,7 +14,7 @@ void loop() {
   // Reverse rotation GO DOWN
   digitalWrite(IN1, LOW);
   digitalWrite(IN2, HIGH);
-  delay(1800);  // run for 1.8 seconds
+  delay(1667);  // run for 1.667 seconds
 
   // Brake
   digitalWrite(IN1, LOW);
