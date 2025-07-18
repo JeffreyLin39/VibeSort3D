@@ -6,7 +6,7 @@ X_MAX = 3400
 Y_MIN = 300
 Y_MAX = 1900
 Y_OFFSET = 2100
-X_OFFSET = 3550
+X_OFFSET = 3600
 def mask_lego_pixels(bgr):
     hsv = cv2.cvtColor(bgr, cv2.COLOR_BGR2HSV)
 
