@@ -6,7 +6,8 @@ import bin_controller_pb2_grpc as pb_grpc
 
 #Hardcoded with Kevin's Laptop IP
 SERVER_ADDRESS = "10.31.28.195:50051"
-
+#Hotspot
+# SERVER_ADDRESS = "172.20.10.2:50051"
 channel = grpc.insecure_channel(SERVER_ADDRESS)
 stub = pb_grpc.BinControllerStub(channel)
 
@@ -19,6 +20,8 @@ def classify_crop(image_id, crop):
         response = stub.UploadImage(request)
         if not response or not response.result:
             print(f"Empty or invalid response for image_id {image_id}")
+            if response:
+                print("response: ",response)
             return (image_id, "error")
         image_id = response.image_id  
         raw_result = response.result  

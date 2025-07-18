@@ -10,9 +10,16 @@ X_OFFSET = 3500
 def mask_lego_pixels(bgr):
     hsv = cv2.cvtColor(bgr, cv2.COLOR_BGR2HSV)
 
+    # General colorful LEGO pieces
     colorful = cv2.inRange(hsv, (0, 60, 60), (179, 255, 255))
-    white = cv2.inRange(hsv, (0, 0, 200), (179, 30, 255))
-    wood_mask = cv2.inRange(hsv, (10, 30, 40), (25, 180, 180))
+
+    # White LEGO bricks
+    white = cv2.inRange(hsv, (0, 0, 200), (179, 40, 255))
+
+    # Aggressive wood/beige suppression
+    wood_mask1 = cv2.inRange(hsv, (10, 20, 100), (25, 180, 230))   
+    wood_mask2 = cv2.inRange(hsv, (0, 10, 140), (20, 80, 255))     
+    wood_mask = cv2.bitwise_or(wood_mask1, wood_mask2)
     not_wood = cv2.bitwise_not(wood_mask)
 
     lego_mask = cv2.bitwise_or(colorful, white)
