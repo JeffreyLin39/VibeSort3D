@@ -10,20 +10,37 @@ X_OFFSET = 3600
 def mask_lego_pixels(bgr):
     hsv = cv2.cvtColor(bgr, cv2.COLOR_BGR2HSV)
 
-    # General colorful LEGO pieces
-    colorful = cv2.inRange(hsv, (0, 60, 60), (179, 255, 255))
+    # LEGO color masks
+    red1 = cv2.inRange(hsv, (0, 100, 50), (10, 255, 255))
+    red2 = cv2.inRange(hsv, (160, 100, 50), (179, 255, 255))
+    red = cv2.bitwise_or(red1, red2)
 
-    # White LEGO bricks
-    white = cv2.inRange(hsv, (0, 0, 200), (179, 40, 255))
+    blue = cv2.inRange(hsv, (90, 80, 50), (130, 255, 255))
+    green = cv2.inRange(hsv, (40, 50, 50), (85, 255, 255))
+    yellow = cv2.inRange(hsv, (20, 100, 100), (35, 255, 255))
+    brown = cv2.inRange(hsv, (10, 100, 30), (20, 255, 180))
 
-    # Aggressive wood/beige suppression
-    wood_mask1 = cv2.inRange(hsv, (10, 20, 100), (25, 180, 230))   
-    wood_mask2 = cv2.inRange(hsv, (0, 10, 140), (20, 80, 255))     
+    # Tighter white range: reduce false positives from bright wood/glare
+    white = cv2.inRange(hsv, (0, 0, 210), (179, 25, 255))
+
+    lego_colors = cv2.bitwise_or(red, blue)
+    lego_colors = cv2.bitwise_or(lego_colors, green)
+    lego_colors = cv2.bitwise_or(lego_colors, yellow)
+    lego_colors = cv2.bitwise_or(lego_colors, white)
+    lego_colors = cv2.bitwise_or(lego_colors, brown)
+
+    # Suppress light beige/wood tones
+    wood_mask1 = cv2.inRange(hsv, (10, 20, 160), (30, 100, 255))
+    wood_mask2 = cv2.inRange(hsv, (0, 0, 180), (30, 40, 255))
     wood_mask = cv2.bitwise_or(wood_mask1, wood_mask2)
-    not_wood = cv2.bitwise_not(wood_mask)
 
-    lego_mask = cv2.bitwise_or(colorful, white)
-    lego_mask = cv2.bitwise_and(lego_mask, not_wood)
+    # Additional suppression for glare (very bright and low saturation)
+    glare_mask = cv2.inRange(hsv, (0, 0, 230), (179, 40, 255))
+
+    suppress_mask = cv2.bitwise_or(wood_mask, glare_mask)
+    not_suppress = cv2.bitwise_not(suppress_mask)
+
+    lego_mask = cv2.bitwise_and(lego_colors, not_suppress)
 
     return lego_mask
 
