@@ -6,7 +6,7 @@ X_MAX = 3400
 Y_MIN = 300
 Y_MAX = 1900
 Y_OFFSET = 2300
-X_OFFSET = 3450
+X_OFFSET = 3425
 def mask_lego_pixels(bgr):
     hsv = cv2.cvtColor(bgr, cv2.COLOR_BGR2HSV)
 
@@ -21,7 +21,7 @@ def mask_lego_pixels(bgr):
     brown = cv2.inRange(hsv, (10, 100, 30), (20, 255, 180))
 
     # Tighter white range: reduce false positives from bright wood/glare
-    white = cv2.inRange(hsv, (0, 0, 210), (179, 15, 240))
+    white = cv2.inRange(hsv, (0, 0, 230), (179, 10, 255))
 
     # Combine LEGO-relevant colors
     lego_colors = cv2.bitwise_or(red, blue)
