@@ -17,7 +17,6 @@ def main():
     ser = open_serial()
     image = capture_image()
     detections, crops = process_image(image)
-
     for i, center_x, center_y in detections:
         crop = crops[i]
         image_id = str(i)

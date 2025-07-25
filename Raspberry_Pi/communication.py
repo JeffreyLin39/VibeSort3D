@@ -4,10 +4,10 @@ import cv2
 import bin_controller_pb2 as pb
 import bin_controller_pb2_grpc as pb_grpc
 
-#Hardcoded with Kevin's Laptop IP
-SERVER_ADDRESS = "10.31.28.195:50051"
+# #Hardcoded with Kevin's Laptop IP
+# SERVER_ADDRESS = "10.31.28.195:50051"
 #Hotspot
-# SERVER_ADDRESS = "172.20.10.2:50051"
+SERVER_ADDRESS = "172.20.10.2:50051"
 channel = grpc.insecure_channel(SERVER_ADDRESS)
 stub = pb_grpc.BinControllerStub(channel)
 

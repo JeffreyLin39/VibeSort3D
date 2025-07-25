@@ -9,43 +9,37 @@ Y_OFFSET = 2300
 X_OFFSET = 3425
 def mask_lego_pixels(bgr):
     hsv = cv2.cvtColor(bgr, cv2.COLOR_BGR2HSV)
+    mean_v = hsv[..., 2].mean()
+    gamma = np.clip(120.0 / mean_v, 0.6, 1.8)   # target mean ~120
+    lut = np.array([((i / 255.) ** (1 / gamma)) * 255 for i in range(256)],
+                   dtype=np.uint8)
+    bgr = cv2.LUT(bgr, lut)
+    hsv = cv2.cvtColor(bgr, cv2.COLOR_BGR2HSV)
 
-    # LEGO color masks
-    red1 = cv2.inRange(hsv, (0, 100, 50), (10, 255, 255))
-    red2 = cv2.inRange(hsv, (160, 100, 50), (179, 255, 255))
-    red = cv2.bitwise_or(red1, red2)
+    ranges = [
+        ((0,   55, 45), (10, 255, 255)),   # red 1
+        ((170, 55, 45), (179,255, 255)),   # red 2
+        ((18,  40, 45), (40, 255, 255)),   # yellow
+        ((45,  35, 40), (90, 255, 255)),   # green
+        ((95,  35, 40), (135,255, 255)),   # blue
+        ((0,   0, 210), (179,40, 255)),    # white
+        ((6,   70, 30), (22, 200, 170)),   # brown (optional)
+    ]
+    lego_colors = None
+    for lo, hi in ranges:
+        m = cv2.inRange(hsv, lo, hi)
+        lego_colors = m if lego_colors is None else cv2.bitwise_or(lego_colors, m)
 
-    blue = cv2.inRange(hsv, (90, 80, 50), (130, 255, 255))
-    green = cv2.inRange(hsv, (40, 50, 50), (85, 255, 255))
-    yellow = cv2.inRange(hsv, (20, 100, 100), (35, 255, 255))
-    brown = cv2.inRange(hsv, (10, 100, 30), (20, 255, 180))
-
-    # Tighter white range: reduce false positives from bright wood/glare
-    white = cv2.inRange(hsv, (0, 0, 230), (179, 10, 255))
-
-    # Combine LEGO-relevant colors
-    lego_colors = cv2.bitwise_or(red, blue)
-    lego_colors = cv2.bitwise_or(lego_colors, green)
-    lego_colors = cv2.bitwise_or(lego_colors, yellow)
-    lego_colors = cv2.bitwise_or(lego_colors, white)
-    lego_colors = cv2.bitwise_or(lego_colors, brown)
-
-    # Suppress light beige/wood tones
-    wood_mask1 = cv2.inRange(hsv, (10, 20, 160), (30, 100, 255))
-    wood_mask2 = cv2.inRange(hsv, (0, 0, 180), (30, 40, 255))
-    wood_mask = cv2.bitwise_or(wood_mask1, wood_mask2)
-
-    # Additional suppression for glare (very bright and low saturation)
-    glare_mask = cv2.inRange(hsv, (0, 0, 230), (179, 40, 255))
-
-    # Combine all suppression masks
-    suppress_mask = cv2.bitwise_or(wood_mask, glare_mask)
-    not_suppress = cv2.bitwise_not(suppress_mask)
-
-    # Final LEGO mask
-    lego_mask = cv2.bitwise_and(lego_colors, not_suppress)
+    # Low saturation stuff = wood/background
+    low_sat = cv2.inRange(hsv, (0, 0, 0), (179, 60, 255))
+    wood = cv2.inRange(hsv, (10, 0, 40), (32, 180, 255))  # hue of the board
+    glare = cv2.inRange(hsv, (0, 0, 235), (179, 60, 255))
+    suppress = cv2.bitwise_or(wood, glare)
+    suppress = cv2.bitwise_or(suppress, low_sat)
+    lego_mask = cv2.bitwise_and(lego_colors, cv2.bitwise_not(suppress))
 
     return lego_mask
+
 
 def find_lego_contours(mask, min_area=2000):
     contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
