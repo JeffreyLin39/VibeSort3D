@@ -12,15 +12,15 @@ import time
 
 # Hardcoding the bins for now
 bins = {
-    "red": 10,
-    "blue": 20,
-    "yellow": 29,
+    "1": 10,
+    "2": 20,
+    "3": 29,
 }
 
 default_bin = 0
 
 # How long to wait after stopping motor before processing (seconds)
-SETTLE_TIME = 5
+SETTLE_TIME = 2
 
 
 def main():
@@ -50,7 +50,7 @@ def main():
             if detections:
                 print(f"🧱 Detected {len(detections)} piece(s)")
                 
-                # Stop motor and wait for pieces to settle
+                # # Stop motor and wait for pieces to settle
                 motor_off(motor_ser)
                 print(f"⏳ Waiting {SETTLE_TIME}s for pieces to settle...")
                 time.sleep(SETTLE_TIME)
