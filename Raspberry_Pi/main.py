@@ -38,8 +38,8 @@ def main():
     print("✅ Both Arduinos connected successfully")
     
     try:
-        # Start with motor ON (vibrating to feed pieces)
-        motor_on(motor_ser)
+        # # Start with motor ON (vibrating to feed pieces)
+        # motor_on(motor_ser)
         
         # Main loop - runs continuously
         while True:
