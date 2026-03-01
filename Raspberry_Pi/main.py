@@ -38,10 +38,8 @@ def main():
     print("✅ Both Arduinos connected successfully")
     
     try:
-        # # Start with motor ON (vibrating to feed pieces)
-        # motor_on(motor_ser)
+        #By default the motor starts on in the arduino code 
         
-        # Main loop - runs continuously
         while True:
             # Capture and detect
             image = capture_image()
@@ -52,18 +50,18 @@ def main():
                 
                 # # Stop motor and wait for pieces to settle
                 motor_off(motor_ser)
-                print(f"⏳ Waiting {SETTLE_TIME}s for pieces to settle...")
-                time.sleep(SETTLE_TIME)
+                # print(f"⏳ Waiting {SETTLE_TIME}s for pieces to settle...")
+                # time.sleep(SETTLE_TIME)
                 
-                # Take a fresh image after settling
-                print("📸 Capturing settled image...")
-                image = capture_image()
-                detections, crops = process_image(image)
+                # # Take a fresh image after settling
+                # print("📸 Capturing settled image...")
+                # image = capture_image()
+                # detections, crops = process_image(image)
                 
-                if not detections:
-                    print("⚠️ No pieces detected after settling, resuming motor")
-                    motor_on(motor_ser)
-                    continue
+                # if not detections:
+                #     print("⚠️ No pieces detected after settling, resuming motor")
+                #     motor_on(motor_ser)
+                #     continue
                 
                 print(f"🧱 Processing {len(detections)} piece(s)")
                 
