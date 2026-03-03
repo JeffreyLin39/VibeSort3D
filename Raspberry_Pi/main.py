@@ -12,12 +12,12 @@ import time
 
 # Hardcoding the bins for now
 bins = {
-    "1": 10,
-    "2": 20,
-    "3": 29,
+    "2": 10,
+    "3": 20,
+    "4": 29,
 }
 
-default_bin = 0
+default_bin = 1
 
 # How long to wait after stopping motor before processing (seconds)
 SETTLE_TIME = 2
