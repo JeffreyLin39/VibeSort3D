@@ -80,34 +80,39 @@ def process_image(image, scale=0.5, debug_output_folder="test_output"):
             detections.append((crop_id, X_OFFSET - center_x, Y_OFFSET - center_y))
             crop_id += 1
 
-    # --- Debug output: always save crops/mask/outlined to a folder ---
-    # Create a unique subfolder per call, e.g. test_output/2026-02-28_15-30-12
-    timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    out_dir = os.path.join(debug_output_folder, timestamp)
-    os.makedirs(out_dir, exist_ok=True)
+    # --- Debug output: save crops/mask/outlined/original to a folder, but only if we found any crops ---
+    if len(crops) > 0:
+        # Create a unique subfolder per call, e.g. test_output/2026-02-28_15-30-12
+        timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        out_dir = os.path.join(debug_output_folder, timestamp)
+        os.makedirs(out_dir, exist_ok=True)
 
-    # Save crops
-    for cid, crop_img in crops.items():
-        crop_path = os.path.join(out_dir, f"crop_{cid}.png")
-        cv2.imwrite(crop_path, crop_img)
+        # Save original (resized) image
+        original_path = os.path.join(out_dir, "original.png")
+        cv2.imwrite(original_path, image)
 
-    # Save outlined image with detections and ROI
-    outlined = image.copy()
-    for cnt in contours:
-        x, y, w, h = cv2.boundingRect(cnt)
-        if x >= X_MIN * scale and x + w <= X_MAX * scale and y >= Y_MIN * scale and y + h <= Y_MAX * scale:
-            cv2.rectangle(outlined, (x, y), (x + w, y + h), (0, 0, 255), 2)
+        # Save crops
+        for cid, crop_img in crops.items():
+            crop_path = os.path.join(out_dir, f"crop_{cid}.png")
+            cv2.imwrite(crop_path, crop_img)
 
-    roi_x1, roi_y1 = int(X_MIN * scale), int(Y_MIN * scale)
-    roi_x2, roi_y2 = int(X_MAX * scale), int(Y_MAX * scale)
-    cv2.rectangle(outlined, (roi_x1, roi_y1), (roi_x2, roi_y2), (0, 255, 0), 3)
+        # Save outlined image with detections and ROI
+        outlined = image.copy()
+        for cnt in contours:
+            x, y, w, h = cv2.boundingRect(cnt)
+            if x >= X_MIN * scale and x + w <= X_MAX * scale and y >= Y_MIN * scale and y + h <= Y_MAX * scale:
+                cv2.rectangle(outlined, (x, y), (x + w, y + h), (0, 0, 255), 2)
 
-    outlined_path = os.path.join(out_dir, "outlined.png")
-    cv2.imwrite(outlined_path, outlined)
+        roi_x1, roi_y1 = int(X_MIN * scale), int(Y_MIN * scale)
+        roi_x2, roi_y2 = int(X_MAX * scale), int(Y_MAX * scale)
+        cv2.rectangle(outlined, (roi_x1, roi_y1), (roi_x2, roi_y2), (0, 255, 0), 3)
 
-    # Save mask
-    mask_path = os.path.join(out_dir, "mask.png")
-    cv2.imwrite(mask_path, mask)
+        outlined_path = os.path.join(out_dir, "outlined.png")
+        cv2.imwrite(outlined_path, outlined)
+
+        # Save mask
+        mask_path = os.path.join(out_dir, "mask.png")
+        cv2.imwrite(mask_path, mask)
 
     return detections, crops
 
