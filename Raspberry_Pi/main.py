@@ -37,10 +37,17 @@ def main():
     
     print("✅ Both Arduinos connected successfully")
     
+    # Safety counter to avoid deadlock: every 10 iterations we force the motor ON
+    iteration_count = 0
+
     try:
-        #By default the motor starts on in the arduino code 
-        
+        # By default the motor starts ON in the Arduino code
         while True:
+            iteration_count += 1
+            if iteration_count >= 10:
+                motor_on(motor_ser)
+                iteration_count = 0
+
             # Capture and detect
             image = capture_image()
             detections, crops = process_image(image)
