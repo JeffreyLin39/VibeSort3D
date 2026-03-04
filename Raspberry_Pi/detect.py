@@ -10,33 +10,34 @@ Y_MAX = 1900
 Y_OFFSET = 2300
 X_OFFSET = 3425
 def mask_lego_pixels(bgr):
-    # === COLOR-BASED DETECTION FOR BLACK BACKGROUND ===
-    
-    # Gamma correction to normalize brightness
+    """
+    Color-based mask tuned for bright LEGO colors on a dark mat,
+    as in compare_img.jpg.
+    """
     hsv = cv2.cvtColor(bgr, cv2.COLOR_BGR2HSV)
+
+    # Mild gamma correction to normalize brightness without blowing up the mat
     mean_v = hsv[..., 2].mean()
-    gamma = np.clip(120.0 / mean_v, 0.6, 1.8)
-    lut = np.array([((i / 255.) ** (1 / gamma)) * 255 for i in range(256)], dtype=np.uint8)
+    gamma = np.clip(140.0 / mean_v, 0.7, 1.4)
+    lut = np.array([((i / 255.0) ** (1.0 / gamma)) * 255.0 for i in range(256)], dtype=np.uint8)
     hsv[..., 2] = cv2.LUT(hsv[..., 2], lut)
-    
-    # Specific LEGO color ranges
-    # Higher saturation + value thresholds to reject dark mat texture
-    red1 = cv2.inRange(hsv, (0, 120, 100), (10, 255, 255))
-    red2 = cv2.inRange(hsv, (160, 120, 100), (179, 255, 255))
+
+    # Higher saturation/value thresholds to reject the dark/grey mat and wood
+    # Ranges chosen to favor the bright yellow/blue/green bricks seen in compare_img.jpg
+    red1 = cv2.inRange(hsv, (0, 150, 150), (10, 255, 255))
+    red2 = cv2.inRange(hsv, (160, 150, 150), (179, 255, 255))
     red = cv2.bitwise_or(red1, red2)
-    
-    yellow = cv2.inRange(hsv, (15, 120, 120), (35, 255, 255))
-    orange = cv2.inRange(hsv, (10, 120, 120), (20, 255, 255))
-    
-    # Green: raised thresholds to avoid dark mat (mat has H ~90-110, low S/V)
-    green = cv2.inRange(hsv, (35, 100, 100), (85, 255, 255))
-    
-    # Blue: expanded range but higher V to catch bright blue, reject dark mat
-    blue = cv2.inRange(hsv, (85, 80, 100), (135, 255, 255))
-    
-    # White LEGOs
-    white = cv2.inRange(hsv, (0, 0, 200), (179, 40, 255))
-    
+
+    yellow = cv2.inRange(hsv, (18, 150, 170), (40, 255, 255))
+    orange = cv2.inRange(hsv, (10, 150, 160), (25, 255, 255))
+
+    green = cv2.inRange(hsv, (40, 140, 150), (85, 255, 255))
+
+    blue = cv2.inRange(hsv, (95, 140, 150), (135, 255, 255))
+
+    # White / very bright light pieces
+    white = cv2.inRange(hsv, (0, 0, 210), (179, 40, 255))
+
     # Combine all colors
     lego_mask = cv2.bitwise_or(red, yellow)
     lego_mask = cv2.bitwise_or(lego_mask, green)
@@ -44,10 +45,11 @@ def mask_lego_pixels(bgr):
     lego_mask = cv2.bitwise_or(lego_mask, orange)
     lego_mask = cv2.bitwise_or(lego_mask, white)
 
-    # Larger kernel to remove mat texture noise
-    kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (7, 7))
-    lego_mask = cv2.morphologyEx(lego_mask, cv2.MORPH_OPEN, kernel)
-    lego_mask = cv2.morphologyEx(lego_mask, cv2.MORPH_CLOSE, kernel)
+    # Morphological cleanup: remove small speckles, fill small gaps
+    kernel_open = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5))
+    kernel_close = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (9, 9))
+    lego_mask = cv2.morphologyEx(lego_mask, cv2.MORPH_OPEN, kernel_open)
+    lego_mask = cv2.morphologyEx(lego_mask, cv2.MORPH_CLOSE, kernel_close)
 
     return lego_mask
 
